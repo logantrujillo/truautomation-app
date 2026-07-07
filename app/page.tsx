@@ -4,6 +4,7 @@ export default function HomePage() {
   return (
     <main
       style={{
+        position: 'relative',
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
@@ -31,6 +32,12 @@ export default function HomePage() {
         <Link href="/login" className="btn-primary">Log In</Link>
         <Link href="/signup" className="btn-secondary">Get Started</Link>
       </div>
+
+      <footer style={{ position: 'absolute', bottom: 24, fontSize: 13, color: 'var(--gray)' }}>
+        <Link href="/privacy" style={{ color: 'var(--gray)', textDecoration: 'none' }}>
+          Privacy Policy
+        </Link>
+      </footer>
     </main>
   );
 }
