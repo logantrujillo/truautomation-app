@@ -24,14 +24,13 @@ and `/login` pages from the marketing site once deployed.
    user at Step 1 of signup and needs an active session immediately to save progress
    through the rest of the wizard, well before the user ever sees an email. Stripe
    payment at the end effectively gates real access anyway (see `status` below).
-5. After you (Logan) sign up once through the deployed app's `/login` flow (or via
-   Supabase's dashboard "Add user"), find your user's UUID in **Auth → Users**, then
-   run in the SQL Editor:
+5. `/admin` is **not** part of Supabase auth — it's gated by a separate
+   hardcoded username/password (see `lib/adminAuth.ts`). Nothing to set up here.
+6. If upgrading an existing project (rather than a fresh install), run this
+   one-line migration in the SQL Editor to add the VAPI Agent ID column:
    ```sql
-   insert into public.admins (user_id, email)
-   values ('<your-user-uuid>', 'info@truautomationtechnologies.com');
+   alter table public.clients add column if not exists vapi_agent_id text;
    ```
-   That's what unlocks `/admin`.
 
 ## 2. Stripe setup
 
@@ -65,10 +64,8 @@ and `/login` pages from the marketing site once deployed.
 
 ## 4. Twilio
 
-No new setup needed beyond what you already have — the admin dashboard's
-"Sync Numbers from Twilio" button pulls in any numbers already purchased on
-your account (`TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN`), so you can assign
-one to each client as they come in.
+No new setup needed beyond what you already have — assign a purchased Twilio
+number to each client directly from their client detail page in `/admin`.
 
 ## 5. Resend (email)
 
@@ -131,8 +128,11 @@ Every client row has a `status`:
 - `google_tokens` has zero RLS policies granted to any role — only the
   service-role key (used server-side only, in `lib/supabase/admin.ts`) can
   ever read or write it.
-- `/admin` is gated by the `admins` allowlist table, checked server-side
-  (`lib/auth.ts` → `requireAdmin()`) before any cross-client data is fetched
-  with the service-role client. The service-role key is never sent to the browser.
+- `/admin` is gated by a hardcoded username/password (`lib/adminAuth.ts`),
+  completely separate from Supabase auth. Credentials are verified
+  server-side only, and the session is an HMAC-signed httpOnly cookie
+  (24-hour expiry) — never checked or exposed client-side. Once verified,
+  the layout uses the service-role client for cross-client data, which is
+  never sent to the browser.
 - Stripe Embedded Checkout handles all card entry — no card data ever touches
   this app's server.

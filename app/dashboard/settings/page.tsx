@@ -80,31 +80,21 @@ function SettingsInner() {
     if (!userId) return;
     setSaving(true);
     setSaved(false);
-    const supabase = createClient();
 
-    await supabase
-      .from('clients')
-      .update({
-        business_name: businessName,
+    await fetch('/api/client/update-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        businessName,
         phone,
         industry,
         address,
-        alex_instructions: alexInstructions,
-        business_hours: businessHours,
-      })
-      .eq('id', userId);
-
-    await supabase.from('services').delete().eq('client_id', userId);
-    const validServices = services.filter((s) => s.name.trim());
-    if (validServices.length > 0) {
-      await supabase.from('services').insert(validServices.map((s) => ({ client_id: userId, name: s.name, description: s.description })));
-    }
-
-    await supabase.from('faqs').delete().eq('client_id', userId);
-    const validFaqs = faqs.filter((f) => f.question.trim() && f.answer.trim());
-    if (validFaqs.length > 0) {
-      await supabase.from('faqs').insert(validFaqs.map((f) => ({ client_id: userId, question: f.question, answer: f.answer })));
-    }
+        alexInstructions,
+        businessHours,
+        services,
+        faqs,
+      }),
+    });
 
     setSaving(false);
     setSaved(true);

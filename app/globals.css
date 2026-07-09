@@ -115,3 +115,15 @@ th { color: var(--gray); font-size: 12px; text-transform: uppercase; letter-spac
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-track { background: var(--dark); }
 ::-webkit-scrollbar-thumb { background: rgba(255,107,53,0.4); border-radius: 10px; }
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.table-scroll { overflow-x: auto; }
+
+@media (max-width: 800px) {
+  .app-shell { flex-direction: column; }
+  .app-nav { width: 100% !important; flex-direction: row !important; flex-wrap: wrap; align-items: center; border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 16px 20px !important; gap: 12px !important; }
+  .app-nav > div:first-child { margin-bottom: 0 !important; }
+  .app-nav > p { display: none; }
+  .app-nav a, .app-nav button { padding: 8px 10px !important; }
+  .app-content { padding: 20px !important; }
+}

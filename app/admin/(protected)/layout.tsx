@@ -1,21 +1,21 @@
 import { redirect } from 'next/navigation';
-import { requireAdmin } from '@/lib/auth';
+import { isAdminSessionValid } from '@/lib/adminAuth';
 import AdminNav from '@/components/admin/AdminNav';
 
 // Route group (protected) sits alongside app/admin/login/, which is NOT
 // wrapped by this layout — otherwise the redirect below would loop
 // against the login page itself.
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const admin = await requireAdmin();
+  const valid = await isAdminSessionValid();
 
-  if (!admin) {
+  if (!valid) {
     redirect('/admin/login');
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex' }}>
-      <AdminNav email={admin.email} />
-      <div style={{ flex: 1, padding: '32px 40px', maxWidth: 1300 }}>{children}</div>
+    <div className="app-shell" style={{ minHeight: '100vh', display: 'flex' }}>
+      <AdminNav />
+      <div className="app-content" style={{ flex: 1, padding: '32px 40px', maxWidth: 1300, minWidth: 0 }}>{children}</div>
     </div>
   );
 }

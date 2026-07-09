@@ -28,6 +28,7 @@ create table if not exists public.clients (
 
   -- Assigned by admin, not the client
   twilio_number text,
+  vapi_agent_id text,
 
   -- Stripe
   stripe_customer_id text,
@@ -217,3 +218,10 @@ drop trigger if exists clients_set_updated_at on public.clients;
 create trigger clients_set_updated_at
   before update on public.clients
   for each row execute function public.set_updated_at();
+
+-- =========================================================================
+-- MIGRATION: vapi_agent_id (admin dashboard, VAPI agent assignment)
+-- Run this manually in the Supabase SQL Editor on existing projects —
+-- it's already included in the CREATE TABLE above for fresh installs.
+-- =========================================================================
+alter table public.clients add column if not exists vapi_agent_id text;

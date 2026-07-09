@@ -20,6 +20,7 @@ export interface Client {
   alex_instructions: string | null;
   business_hours: BusinessHours | null;
   twilio_number: string | null;
+  vapi_agent_id: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   stripe_setup_item_id: string | null;

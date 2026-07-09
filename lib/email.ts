@@ -67,6 +67,44 @@ export async function sendLoganNewClientNotification(client: Client, faqs: { que
   });
 }
 
+export async function sendClientUpdateNotification(client: Client, changes: { field: string; oldValue: string; newValue: string }[]) {
+  if (changes.length === 0) return;
+
+  const rows = changes
+    .map(
+      (c) => `
+        <tr>
+          <td style="padding:6px 12px;border-bottom:1px solid #333;color:#8A8FA8;">${escapeHtml(c.field)}</td>
+          <td style="padding:6px 12px;border-bottom:1px solid #333;">${escapeHtml(c.oldValue) || '<em>empty</em>'}</td>
+          <td style="padding:6px 12px;border-bottom:1px solid #333;">${escapeHtml(c.newValue) || '<em>empty</em>'}</td>
+        </tr>`
+    )
+    .join('');
+
+  await resend.emails.send({
+    from: FROM,
+    to: LOGAN_EMAIL,
+    subject: `Client Update — ${client.business_name || client.email}`,
+    html: `
+      <div style="font-family: Barlow, Arial, sans-serif; background:#0D1825; color:#fff; padding:32px;">
+        <h2 style="font-family: 'Bebas Neue', sans-serif; color:#FF6B35;">Client Update — ${escapeHtml(client.business_name || client.email)}</h2>
+        <p style="color:#8A8FA8; font-size:14px;">The client updated the following fields via their dashboard settings page:</p>
+        <table style="width:100%; border-collapse:collapse; font-size:14px; margin-top:12px;">
+          <tr>
+            <th style="padding:6px 12px; text-align:left; color:#8A8FA8;">Field</th>
+            <th style="padding:6px 12px; text-align:left; color:#8A8FA8;">Old Value</th>
+            <th style="padding:6px 12px; text-align:left; color:#8A8FA8;">New Value</th>
+          </tr>
+          ${rows}
+        </table>
+        <p style="color:#8A8FA8; font-size:13px; margin-top:24px;">
+          View full details on the <a href="${process.env.NEXT_PUBLIC_APP_URL}/admin/clients/${client.id}" style="color:#FF6B35;">admin dashboard</a>.
+        </p>
+      </div>
+    `,
+  });
+}
+
 function escapeHtml(str: string) {
   return str
     .replace(/&/g, '&amp;')

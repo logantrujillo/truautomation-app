@@ -2,12 +2,20 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { adminDb } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
-import type { PlanId } from '@/lib/types';
+import type { BusinessHours, PlanId } from '@/lib/types';
+import ClientAssignmentForm from '@/components/admin/ClientAssignmentForm';
+
+const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 function formatDuration(seconds: number) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${m}m ${s}s`;
+}
+
+function startOfMonthISO() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 }
 
 export default async function AdminClientDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -20,20 +28,70 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
   const { data: calls } = await db.from('calls').select('*').eq('client_id', id).order('started_at', { ascending: false });
   const { data: faqs } = await db.from('faqs').select('*').eq('client_id', id);
   const { data: services } = await db.from('services').select('*').eq('client_id', id);
+  const { data: googleToken } = await db.from('google_tokens').select('client_id').eq('client_id', id).maybeSingle();
 
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
+  const businessHours = (client.business_hours as BusinessHours | null) ?? {};
+
+  const monthStart = startOfMonthISO();
+  const monthSeconds = (calls ?? [])
+    .filter((c) => c.started_at && c.started_at >= monthStart)
+    .reduce((sum, c) => sum + (c.duration_seconds ?? 0), 0);
+  const monthMinutes = Math.round((monthSeconds / 60) * 10) / 10;
+  const estimatedBill = plan ? (monthMinutes * plan.perMinute).toFixed(2) : '0.00';
 
   return (
     <div>
-      <Link href="/admin" style={{ color: 'var(--gray)', fontSize: 13, textDecoration: 'none' }}>&larr; Back to Clients</Link>
+      <Link href="/admin/clients" style={{ color: 'var(--gray)', fontSize: 13, textDecoration: 'none' }}>&larr; Back to Clients</Link>
       <h1 style={{ fontSize: 32, margin: '12px 0 24px' }}>{client.business_name || client.email}</h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
+      <div className="stat-grid" style={{ marginBottom: 32 }}>
         <InfoCard label="Status" value={client.status.replace('_', ' ')} />
         <InfoCard label="Plan" value={plan ? `${plan.label} · $${plan.perMinute}/min` : '—'} />
-        <InfoCard label="Twilio Number" value={client.twilio_number || 'Unassigned'} />
+        <InfoCard label="Usage This Month" value={`${monthMinutes} min ($${estimatedBill})`} />
         <InfoCard label="Contact" value={`${client.contact_name || ''} · ${client.phone || ''}`} />
       </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16, marginBottom: 32 }}>
+        <ClientAssignmentForm clientId={client.id} initialTwilioNumber={client.twilio_number} initialVapiAgentId={client.vapi_agent_id} />
+
+        <div className="card" style={{ padding: 20 }}>
+          <h2 style={{ fontSize: 20, marginBottom: 16 }}>Business Info</h2>
+          <div style={{ display: 'grid', gap: 8, fontSize: 14 }}>
+            <Row label="Business Name" value={client.business_name || '—'} />
+            <Row label="Address" value={client.address || '—'} />
+            <Row label="Industry" value={client.industry || '—'} />
+            <Row label="Email" value={client.email} />
+            <Row label="Google Integration" value={googleToken ? 'Connected' : 'Not connected'} />
+          </div>
+        </div>
+      </div>
+
+      <section style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: 20, marginBottom: 16 }}>Business Hours</h2>
+        <div className="card" style={{ padding: 20 }}>
+          {DAYS.map((day) => {
+            const hours = businessHours[day];
+            return (
+              <div key={day} style={{ display: 'flex', gap: 16, fontSize: 14, marginBottom: 6 }}>
+                <span style={{ width: 44, fontWeight: 600 }}>{day}</span>
+                <span style={{ color: 'var(--gray)' }}>
+                  {!hours || hours.closed ? 'Closed' : `${hours.open} – ${hours.close}`}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section style={{ marginBottom: 32 }}>
+        <h2 style={{ fontSize: 20, marginBottom: 16 }}>Alex Instructions</h2>
+        <div className="card" style={{ padding: 20 }}>
+          <p style={{ fontSize: 14, color: client.alex_instructions ? 'var(--white)' : 'var(--gray)' }}>
+            {client.alex_instructions || 'None provided'}
+          </p>
+        </div>
+      </section>
 
       <section style={{ marginBottom: 32 }}>
         <h2 style={{ fontSize: 20, marginBottom: 16 }}>Services</h2>
@@ -69,7 +127,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
 
       <section>
         <h2 style={{ fontSize: 20, marginBottom: 16 }}>Full Call Log</h2>
-        <div className="card" style={{ overflow: 'hidden' }}>
+        <div className="card table-scroll">
           {!calls || calls.length === 0 ? (
             <p style={{ padding: 24, color: 'var(--gray)', fontSize: 14 }}>No calls logged yet.</p>
           ) : (
@@ -107,6 +165,15 @@ function InfoCard({ label, value }: { label: string; value: string }) {
     <div className="card" style={{ padding: 16 }}>
       <p style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5, color: 'var(--gray)', marginBottom: 6 }}>{label}</p>
       <p style={{ fontSize: 15, fontWeight: 600 }}>{value}</p>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16 }}>
+      <span style={{ color: 'var(--gray)' }}>{label}</span>
+      <span style={{ textAlign: 'right' }}>{value}</span>
     </div>
   );
 }

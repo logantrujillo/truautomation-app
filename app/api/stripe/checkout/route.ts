@@ -41,6 +41,19 @@ export async function POST() {
   }
 
   let customerId = client.stripe_customer_id as string | null;
+
+  // If a customer ID exists, confirm it's valid for the current Stripe key's
+  // mode (test vs live). A mismatched-mode ID (e.g. left over from switching
+  // test/live keys) causes checkout session creation to fail, so we detect
+  // and clear it here rather than let the call throw further down.
+  if (customerId) {
+    try {
+      await stripe.customers.retrieve(customerId);
+    } catch {
+      customerId = null;
+    }
+  }
+
   if (!customerId) {
     const customer = await stripe.customers.create({
       email: client.email,
@@ -51,26 +64,31 @@ export async function POST() {
     await supabase.from('clients').update({ stripe_customer_id: customerId }).eq('id', client.id);
   }
 
-  const session = await stripe.checkout.sessions.create({
-    ui_mode: 'embedded',
-    mode: 'subscription',
-    customer: customerId,
-    line_items: [
-      { price: setupFeePriceId, quantity: 1 },
-      { price: meteredPriceId },
-    ],
-    subscription_data: {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: 'embedded',
+      mode: 'subscription',
+      customer: customerId,
+      line_items: [
+        { price: setupFeePriceId, quantity: 1 },
+        { price: meteredPriceId },
+      ],
+      subscription_data: {
+        metadata: { client_id: client.id, plan: client.plan },
+      },
       metadata: { client_id: client.id, plan: client.plan },
-    },
-    metadata: { client_id: client.id, plan: client.plan },
-    redirect_on_completion: 'always',
-    return_url: `${process.env.NEXT_PUBLIC_APP_URL}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
-  });
+      redirect_on_completion: 'always',
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/signup/success?session_id={CHECKOUT_SESSION_ID}`,
+    });
 
-  return NextResponse.json({
-    clientSecret: session.client_secret,
-    setupFee: SETUP_FEE,
-    perMinute: plan.perMinute,
-    planLabel: plan.label,
-  });
+    return NextResponse.json({
+      clientSecret: session.client_secret,
+      setupFee: SETUP_FEE,
+      perMinute: plan.perMinute,
+      planLabel: plan.label,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Could not create checkout session.';
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -16,26 +15,17 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
 
-    const supabase = createClient();
-    const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (signInError || !data.user) {
-      setLoading(false);
-      setError(signInError?.message || 'Login failed');
-      return;
-    }
-
-    const { data: adminRow } = await supabase
-      .from('admins')
-      .select('user_id')
-      .eq('user_id', data.user.id)
-      .single();
+    const res = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
 
     setLoading(false);
 
-    if (!adminRow) {
-      await supabase.auth.signOut();
-      setError('This account is not authorized for admin access.');
+    if (!res.ok) {
+      setError(data.error || 'Login failed');
       return;
     }
 
@@ -50,12 +40,12 @@ export default function AdminLoginPage() {
         <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 28 }}>TruAutomation internal access only</p>
 
         <div className="field">
-          <label htmlFor="email">Email</label>
-          <input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+          <label htmlFor="username">Username</label>
+          <input id="username" type="text" required autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} />
         </div>
         <div className="field">
           <label htmlFor="password">Password</label>
-          <input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input id="password" type="password" required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
         </div>
 
         {error && <p className="error-text" style={{ marginBottom: 16 }}>{error}</p>}
