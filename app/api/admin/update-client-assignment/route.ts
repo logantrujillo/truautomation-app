@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isAdminSessionValid } from '@/lib/adminAuth';
 import { adminDb } from '@/lib/auth';
+import { toE164 } from '@/lib/phone';
 
 export async function POST(request: Request) {
   const valid = await isAdminSessionValid();
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
   }
 
   const update: Record<string, string | null> = {};
-  if ('twilioNumber' in (body ?? {})) update.twilio_number = body.twilioNumber?.trim() || null;
+  if ('twilioNumber' in (body ?? {})) update.twilio_number = toE164(body.twilioNumber);
   if ('vapiAgentId' in (body ?? {})) update.vapi_agent_id = body.vapiAgentId?.trim() || null;
 
   if (Object.keys(update).length === 0) {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { normalizePhone } from '@/lib/phone';
 import type { CallOutcome } from '@/lib/types';
 
 // VAPI server webhook — logs completed calls to the correct client based
@@ -41,7 +42,12 @@ export async function POST(request: Request) {
 
   const db = createAdminClient();
 
-  const { data: client } = await db.from('clients').select('id').eq('twilio_number', twilioNumber).single();
+  // Twilio numbers can be stored/reported in different formats
+  // ("+18447482410" vs "844 748 2410" vs "(844) 748-2410"), so match by
+  // normalized digits rather than exact string equality.
+  const normalizedTarget = normalizePhone(twilioNumber);
+  const { data: candidates } = await db.from('clients').select('id, twilio_number').not('twilio_number', 'is', null);
+  const client = (candidates ?? []).find((c) => normalizePhone(c.twilio_number) === normalizedTarget) ?? null;
 
   if (!client) {
     console.error('VAPI webhook: no client assigned to number', twilioNumber);
