@@ -225,3 +225,17 @@ create trigger clients_set_updated_at
 -- it's already included in the CREATE TABLE above for fresh installs.
 -- =========================================================================
 alter table public.clients add column if not exists vapi_agent_id text;
+
+-- =========================================================================
+-- MIGRATION: manual monthly stats + call transcripts
+-- Until there are enough clients to justify wiring the dashboard straight
+-- to VAPI/Twilio usage data, Logan enters these numbers by hand each day
+-- via the admin dashboard. Run this manually in the Supabase SQL Editor.
+-- =========================================================================
+alter table public.clients add column if not exists manual_minutes_used numeric not null default 0;
+alter table public.clients add column if not exists manual_appointments_booked integer not null default 0;
+alter table public.clients add column if not exists manual_calls_handled integer not null default 0;
+
+-- Lets the admin paste a call transcript against a caller's number without
+-- a VAPI call record backing it.
+alter table public.calls add column if not exists transcript text;

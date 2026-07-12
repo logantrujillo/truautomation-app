@@ -3,11 +3,6 @@ import { getCurrentClient } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
 import type { PlanId } from '@/lib/types';
 
-function startOfMonthISO() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
-}
-
 function formatDuration(seconds: number) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
@@ -27,12 +22,6 @@ export default async function DashboardOverview() {
 
   const supabase = await createClient();
 
-  const { data: monthCalls } = await supabase
-    .from('calls')
-    .select('duration_seconds')
-    .eq('client_id', client.id)
-    .gte('started_at', startOfMonthISO());
-
   const { data: recentCalls } = await supabase
     .from('calls')
     .select('*')
@@ -49,8 +38,7 @@ export default async function DashboardOverview() {
     .order('scheduled_at', { ascending: true })
     .limit(10);
 
-  const usageSeconds = (monthCalls ?? []).reduce((sum, c) => sum + (c.duration_seconds ?? 0), 0);
-  const usageMinutes = Math.round((usageSeconds / 60) * 10) / 10;
+  const usageMinutes = client.manual_minutes_used ?? 0;
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
   const estimatedCost = plan ? (usageMinutes * plan.perMinute).toFixed(2) : '0.00';
 
@@ -58,10 +46,12 @@ export default async function DashboardOverview() {
     <div>
       <h1 style={{ fontSize: 32, marginBottom: 24 }}>Overview</h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32 }}>
+      <div className="stat-grid" style={{ marginBottom: 32 }}>
         <StatCard label="Your Alex Number" value={client.twilio_number || 'Pending assignment'} />
         <StatCard label="Plan" value={plan ? `${plan.label} · $${plan.perMinute.toFixed(2)}/min` : '—'} />
         <StatCard label="Usage This Month" value={`${usageMinutes} min ($${estimatedCost})`} />
+        <StatCard label="Appointments Booked This Month" value={String(client.manual_appointments_booked ?? 0)} />
+        <StatCard label="Total Calls Handled This Month" value={String(client.manual_calls_handled ?? 0)} />
       </div>
 
       <section style={{ marginBottom: 40 }}>

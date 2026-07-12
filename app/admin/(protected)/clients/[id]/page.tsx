@@ -4,6 +4,8 @@ import { adminDb } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
 import type { BusinessHours, PlanId } from '@/lib/types';
 import ClientAssignmentForm from '@/components/admin/ClientAssignmentForm';
+import ClientStatsForm from '@/components/admin/ClientStatsForm';
+import CallLogForm from '@/components/admin/CallLogForm';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -11,11 +13,6 @@ function formatDuration(seconds: number) {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
   return `${m}m ${s}s`;
-}
-
-function startOfMonthISO() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 }
 
 export default async function AdminClientDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -33,11 +30,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
   const businessHours = (client.business_hours as BusinessHours | null) ?? {};
 
-  const monthStart = startOfMonthISO();
-  const monthSeconds = (calls ?? [])
-    .filter((c) => c.started_at && c.started_at >= monthStart)
-    .reduce((sum, c) => sum + (c.duration_seconds ?? 0), 0);
-  const monthMinutes = Math.round((monthSeconds / 60) * 10) / 10;
+  const monthMinutes = client.manual_minutes_used ?? 0;
   const estimatedBill = plan ? (monthMinutes * plan.perMinute).toFixed(2) : '0.00';
 
   return (
@@ -49,11 +42,20 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
         <InfoCard label="Status" value={client.status.replace('_', ' ')} />
         <InfoCard label="Plan" value={plan ? `${plan.label} · $${plan.perMinute}/min` : '—'} />
         <InfoCard label="Usage This Month" value={`${monthMinutes} min ($${estimatedBill})`} />
+        <InfoCard label="Appointments Booked" value={String(client.manual_appointments_booked ?? 0)} />
+        <InfoCard label="Total Calls Handled" value={String(client.manual_calls_handled ?? 0)} />
         <InfoCard label="Contact" value={`${client.contact_name || ''} · ${client.phone || ''}`} />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16, marginBottom: 32 }}>
         <ClientAssignmentForm clientId={client.id} initialTwilioNumber={client.twilio_number} initialVapiAgentId={client.vapi_agent_id} />
+
+        <ClientStatsForm
+          clientId={client.id}
+          initialMinutesUsed={client.manual_minutes_used ?? 0}
+          initialAppointmentsBooked={client.manual_appointments_booked ?? 0}
+          initialCallsHandled={client.manual_calls_handled ?? 0}
+        />
 
         <div className="card" style={{ padding: 20 }}>
           <h2 style={{ fontSize: 20, marginBottom: 16 }}>Business Info</h2>
@@ -127,6 +129,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
 
       <section>
         <h2 style={{ fontSize: 20, marginBottom: 16 }}>Full Call Log</h2>
+        <CallLogForm clientId={client.id} />
         <div className="card table-scroll">
           {!calls || calls.length === 0 ? (
             <p style={{ padding: 24, color: 'var(--gray)', fontSize: 14 }}>No calls logged yet.</p>
@@ -134,11 +137,11 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
             <table>
               <thead>
                 <tr>
-                  <th>Caller</th>
+                  <th>Caller&apos;s Number</th>
                   <th>Date/Time</th>
                   <th>Duration</th>
                   <th>Outcome</th>
-                  <th>Summary</th>
+                  <th>Transcript</th>
                 </tr>
               </thead>
               <tbody>
@@ -148,7 +151,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
                     <td>{c.started_at ? new Date(c.started_at).toLocaleString() : '—'}</td>
                     <td>{formatDuration(c.duration_seconds ?? 0)}</td>
                     <td>{c.outcome || '—'}</td>
-                    <td>{c.summary || '—'}</td>
+                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}
               </tbody>

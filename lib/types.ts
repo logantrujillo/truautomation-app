@@ -21,6 +21,9 @@ export interface Client {
   business_hours: BusinessHours | null;
   twilio_number: string | null;
   vapi_agent_id: string | null;
+  manual_minutes_used: number;
+  manual_appointments_booked: number;
+  manual_calls_handled: number;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
   stripe_setup_item_id: string | null;
@@ -56,6 +59,7 @@ export interface Call {
   duration_seconds: number;
   outcome: CallOutcome | null;
   summary: string | null;
+  transcript: string | null;
   created_at: string;
 }
 
