@@ -2,19 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getCurrentClient } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
 import type { PlanId } from '@/lib/types';
-
-function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}m ${s}s`;
-}
-
-const OUTCOME_LABEL: Record<string, string> = {
-  booked: 'Booked',
-  cancelled: 'Cancelled',
-  escalated: 'Escalated',
-  inquiry: 'Inquiry',
-};
+import FormattedDateTime from '@/components/FormattedDateTime';
 
 export default async function DashboardOverview() {
   const client = await getCurrentClient();
@@ -74,7 +62,7 @@ export default async function DashboardOverview() {
                   <tr key={a.id}>
                     <td>{a.customer_name || '—'}</td>
                     <td>{a.service || '—'}</td>
-                    <td>{a.scheduled_at ? new Date(a.scheduled_at).toLocaleString() : '—'}</td>
+                    <td><FormattedDateTime iso={a.scheduled_at} /></td>
                     <td>{a.customer_phone || '—'}</td>
                   </tr>
                 ))}
@@ -97,8 +85,6 @@ export default async function DashboardOverview() {
                 <tr>
                   <th>Caller</th>
                   <th>Date/Time</th>
-                  <th>Duration</th>
-                  <th>Outcome</th>
                   <th>Transcript</th>
                 </tr>
               </thead>
@@ -106,9 +92,7 @@ export default async function DashboardOverview() {
                 {recentCalls.map((c) => (
                   <tr key={c.id}>
                     <td>{c.caller_name || c.caller_number || 'Unknown'}</td>
-                    <td>{c.started_at ? new Date(c.started_at).toLocaleString() : '—'}</td>
-                    <td>{formatDuration(c.duration_seconds ?? 0)}</td>
-                    <td>{c.outcome ? OUTCOME_LABEL[c.outcome] : '—'}</td>
+                    <td><FormattedDateTime iso={c.started_at} /></td>
                     <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}

@@ -6,6 +6,7 @@ import type { BusinessHours, PlanId } from '@/lib/types';
 import ClientAssignmentForm from '@/components/admin/ClientAssignmentForm';
 import ClientStatsForm from '@/components/admin/ClientStatsForm';
 import CallLogForm from '@/components/admin/CallLogForm';
+import FormattedDateTime from '@/components/FormattedDateTime';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -140,7 +141,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
                 {calls.map((c) => (
                   <tr key={c.id}>
                     <td>{c.caller_name || c.caller_number || 'Unknown'}</td>
-                    <td>{c.started_at ? new Date(c.started_at).toLocaleString() : '—'}</td>
+                    <td><FormattedDateTime iso={c.started_at} /></td>
                     <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}
