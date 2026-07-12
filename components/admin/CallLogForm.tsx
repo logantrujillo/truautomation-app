@@ -24,7 +24,12 @@ export default function CallLogForm({ clientId }: Props) {
     const res = await fetch('/api/admin/add-call-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientId, callerNumber, startedAt, transcript }),
+      body: JSON.stringify({
+        clientId,
+        callerNumber,
+        startedAt: startedAt ? new Date(startedAt).toISOString() : '',
+        transcript,
+      }),
     });
     const data = await res.json();
 
