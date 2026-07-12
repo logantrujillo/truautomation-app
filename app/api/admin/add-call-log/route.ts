@@ -12,6 +12,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const clientId = body?.clientId;
   const callerNumber = typeof body?.callerNumber === 'string' ? body.callerNumber.trim() : '';
+  const startedAt = typeof body?.startedAt === 'string' ? body.startedAt.trim() : '';
   const transcript = typeof body?.transcript === 'string' ? body.transcript.trim() : '';
 
   if (typeof clientId !== 'string') {
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     client_id: clientId,
     caller_number: toE164(callerNumber),
     transcript: transcript || null,
-    started_at: new Date().toISOString(),
+    started_at: startedAt ? new Date(startedAt).toISOString() : new Date().toISOString(),
   });
 
   if (error) {

@@ -9,12 +9,6 @@ import CallLogForm from '@/components/admin/CallLogForm';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}m ${s}s`;
-}
-
 export default async function AdminClientDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const db = adminDb();
@@ -139,8 +133,6 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
                 <tr>
                   <th>Caller&apos;s Number</th>
                   <th>Date/Time</th>
-                  <th>Duration</th>
-                  <th>Outcome</th>
                   <th>Transcript</th>
                 </tr>
               </thead>
@@ -149,8 +141,6 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
                   <tr key={c.id}>
                     <td>{c.caller_name || c.caller_number || 'Unknown'}</td>
                     <td>{c.started_at ? new Date(c.started_at).toLocaleString() : '—'}</td>
-                    <td>{formatDuration(c.duration_seconds ?? 0)}</td>
-                    <td>{c.outcome || '—'}</td>
                     <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}

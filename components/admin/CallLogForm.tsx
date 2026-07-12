@@ -10,6 +10,7 @@ interface Props {
 export default function CallLogForm({ clientId }: Props) {
   const router = useRouter();
   const [callerNumber, setCallerNumber] = useState('');
+  const [startedAt, setStartedAt] = useState('');
   const [transcript, setTranscript] = useState('');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -23,7 +24,7 @@ export default function CallLogForm({ clientId }: Props) {
     const res = await fetch('/api/admin/add-call-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ clientId, callerNumber, transcript }),
+      body: JSON.stringify({ clientId, callerNumber, startedAt, transcript }),
     });
     const data = await res.json();
 
@@ -35,6 +36,7 @@ export default function CallLogForm({ clientId }: Props) {
     }
 
     setCallerNumber('');
+    setStartedAt('');
     setTranscript('');
     setSaved(true);
     router.refresh();
@@ -44,13 +46,21 @@ export default function CallLogForm({ clientId }: Props) {
   return (
     <div className="card" style={{ padding: 20, marginBottom: 16 }}>
       <h2 style={{ fontSize: 20, marginBottom: 16 }}>Add Call Log Entry</h2>
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 320px) 1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 320px) minmax(200px, 320px) 1fr', gap: 20 }}>
         <div className="field" style={{ marginBottom: 0 }}>
           <label>Caller&apos;s Number</label>
           <input
             value={callerNumber}
             onChange={(e) => setCallerNumber(e.target.value)}
             placeholder="+1 555 123 4567"
+          />
+        </div>
+        <div className="field" style={{ marginBottom: 0 }}>
+          <label>Date/Time</label>
+          <input
+            type="datetime-local"
+            value={startedAt}
+            onChange={(e) => setStartedAt(e.target.value)}
           />
         </div>
         <div className="field" style={{ marginBottom: 0 }}>

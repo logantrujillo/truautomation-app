@@ -99,6 +99,7 @@ export default async function DashboardOverview() {
                   <th>Date/Time</th>
                   <th>Duration</th>
                   <th>Outcome</th>
+                  <th>Transcript</th>
                 </tr>
               </thead>
               <tbody>
@@ -108,6 +109,7 @@ export default async function DashboardOverview() {
                     <td>{c.started_at ? new Date(c.started_at).toLocaleString() : '—'}</td>
                     <td>{formatDuration(c.duration_seconds ?? 0)}</td>
                     <td>{c.outcome ? OUTCOME_LABEL[c.outcome] : '—'}</td>
+                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}
               </tbody>
