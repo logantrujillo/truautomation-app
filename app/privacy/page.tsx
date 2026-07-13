@@ -81,7 +81,6 @@ export default function PrivacyPage() {
           </p>
           <ul style={{ paddingLeft: 22, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
             <li>Google Calendar, to check availability and book appointments on your behalf.</li>
-            <li>Google Sheets, to log call data if you choose to enable that feature.</li>
           </ul>
           <p style={{ marginBottom: 12 }}>
             We only access what is needed to provide these features and never store or share any
@@ -141,7 +140,7 @@ export default function PrivacyPage() {
             <li>VAPI – AI call handling and transcription.</li>
             <li>Twilio – phone number provisioning and call routing.</li>
             <li>Resend – transactional email delivery.</li>
-            <li>Google – calendar and sheets integration, only if you connect your account.</li>
+            <li>Google – calendar integration, only if you connect your account.</li>
           </ul>
         </section>
 

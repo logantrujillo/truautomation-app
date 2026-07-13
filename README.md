@@ -10,7 +10,7 @@ and `/login` pages from the marketing site once deployed.
 - **Next.js 14** (App Router) — deploy to **Vercel**
 - **Supabase** — auth, Postgres database, Row Level Security
 - **Stripe** — Embedded Checkout (one-time setup fee + metered per-minute subscription)
-- **Google OAuth** — Calendar + Sheets access per client
+- **Google OAuth** — Calendar access per client
 - **Twilio** — assigning existing purchased numbers to clients
 - **Resend** — transactional emails (welcome email, new-client notification)
 - **VAPI** — webhook that logs completed calls
@@ -54,9 +54,9 @@ and `/login` pages from the marketing site once deployed.
 ## 3. Google OAuth setup
 
 1. Google Cloud Console → new project → **APIs & Services → Enabled APIs**: enable
-   Google Calendar API and Google Sheets API.
+   Google Calendar API.
 2. **OAuth consent screen**: set up as External (or Internal if using Workspace),
-   add scopes `.../auth/calendar` and `.../auth/spreadsheets`.
+   add scope `.../auth/calendar`.
 3. **Credentials → Create OAuth client ID** (Web application). Add an authorized
    redirect URI: `https://<your-domain>/api/auth/google/callback` (and
    `http://localhost:3000/api/auth/google/callback` for local dev).

@@ -3,7 +3,6 @@ import { google } from 'googleapis';
 
 export const GOOGLE_SCOPES = [
   'https://www.googleapis.com/auth/calendar',
-  'https://www.googleapis.com/auth/spreadsheets',
 ];
 
 export function getGoogleOAuthClient() {

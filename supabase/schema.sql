@@ -101,7 +101,7 @@ create table if not exists public.appointments (
 );
 
 -- ---------------------------------------------------------------------
--- GOOGLE_TOKENS — OAuth refresh/access tokens for Calendar + Sheets.
+-- GOOGLE_TOKENS — OAuth refresh/access tokens for Calendar.
 -- No RLS policies at all: only the service-role key (server-only) may
 -- ever read or write this table.
 -- ---------------------------------------------------------------------

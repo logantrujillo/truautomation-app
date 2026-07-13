@@ -24,8 +24,8 @@ export default function Step6GoogleIntegration({ state, userId, onNext, onBack }
     <div>
       <h2 style={{ fontSize: 26, marginBottom: 8 }}>Connect Google</h2>
       <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>
-        Connect your Google account so Alex can book appointments directly on your Calendar and log
-        call details to a Sheet. You can also skip this and connect it later from your dashboard settings.
+        Connect your Google account so Alex can book appointments directly on your Calendar.
+        You can also skip this and connect it later from your dashboard settings.
       </p>
 
       <div
@@ -40,7 +40,7 @@ export default function Step6GoogleIntegration({ state, userId, onNext, onBack }
         }}
       >
         <div>
-          <p style={{ fontWeight: 600, marginBottom: 4 }}>Google Calendar & Sheets</p>
+          <p style={{ fontWeight: 600, marginBottom: 4 }}>Google Calendar</p>
           <p style={{ fontSize: 13, color: 'var(--gray)' }}>
             {state.googleConnected ? 'Connected ✓' : 'Not connected'}
           </p>
