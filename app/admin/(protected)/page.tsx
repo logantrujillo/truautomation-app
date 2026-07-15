@@ -3,6 +3,8 @@ import { adminDb } from '@/lib/auth';
 import { PLANS, SETUP_FEE } from '@/lib/plans';
 import type { PlanId } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 function startOfMonthISO() {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), 1).toISOString();

@@ -10,6 +10,8 @@ import FormattedDateTime from '@/components/FormattedDateTime';
 import GoogleCredentialCard from '@/components/admin/GoogleCredentialCard';
 import DeleteClientButton from '@/components/admin/DeleteClientButton';
 
+export const dynamic = 'force-dynamic';
+
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default async function AdminClientDetail({ params }: { params: Promise<{ id: string }> }) {

@@ -3,6 +3,8 @@ import { adminDb } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
 import type { PlanId } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminClientList() {
   const db = adminDb();
   const { data: clients } = await db.from('clients').select('*').order('created_at', { ascending: false });
