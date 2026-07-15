@@ -8,6 +8,7 @@ import ClientStatsForm from '@/components/admin/ClientStatsForm';
 import CallLogForm from '@/components/admin/CallLogForm';
 import FormattedDateTime from '@/components/FormattedDateTime';
 import GoogleCredentialCard from '@/components/admin/GoogleCredentialCard';
+import DeleteClientButton from '@/components/admin/DeleteClientButton';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -32,7 +33,12 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
   return (
     <div>
       <Link href="/admin/clients" style={{ color: 'var(--gray)', fontSize: 13, textDecoration: 'none' }}>&larr; Back to Clients</Link>
-      <h1 style={{ fontSize: 32, margin: '12px 0 24px' }}>{client.business_name || client.email}</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, margin: '12px 0 24px' }}>
+        <h1 style={{ fontSize: 32 }}>{client.business_name || client.email}</h1>
+        {(client.status === 'active' || client.status === 'pending_onboarding' || client.status === 'pending_payment') && (
+          <DeleteClientButton clientId={client.id} confirmLabel={client.business_name || client.email} />
+        )}
+      </div>
 
       <div className="stat-grid" style={{ marginBottom: 32 }}>
         <InfoCard label="Status" value={client.status.replace('_', ' ')} />
