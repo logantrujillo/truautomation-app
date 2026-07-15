@@ -16,6 +16,11 @@ export function createAdminClient() {
         autoRefreshToken: false,
         persistSession: false,
       },
+      // See lib/supabase/server.ts — bypass Next.js's fetch Data Cache so
+      // cross-client admin reads are never served stale/cached responses.
+      global: {
+        fetch: (url, options) => fetch(url, { ...options, cache: 'no-store' }),
+      },
     }
   );
 }

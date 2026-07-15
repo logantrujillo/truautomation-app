@@ -14,6 +14,12 @@ export async function middleware(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
+      // Next.js 14 caches fetch() by default, and its cache key does not
+      // account for the Authorization header — so without this, one
+      // user's cached auth response could be served to a different user.
+      global: {
+        fetch: (url: RequestInfo | URL, options?: RequestInit) => fetch(url, { ...options, cache: 'no-store' }),
+      },
       cookies: {
         getAll() {
           return request.cookies.getAll();

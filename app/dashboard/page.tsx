@@ -4,6 +4,9 @@ import { PLANS } from '@/lib/plans';
 import type { PlanId } from '@/lib/types';
 import FormattedDateTime from '@/components/FormattedDateTime';
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 export default async function DashboardOverview() {
   const client = await getCurrentClient();
   if (!client) return null;
