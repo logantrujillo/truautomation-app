@@ -7,6 +7,7 @@ import ClientAssignmentForm from '@/components/admin/ClientAssignmentForm';
 import ClientStatsForm from '@/components/admin/ClientStatsForm';
 import CallLogForm from '@/components/admin/CallLogForm';
 import FormattedDateTime from '@/components/FormattedDateTime';
+import GoogleCredentialCard from '@/components/admin/GoogleCredentialCard';
 
 const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -20,7 +21,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
   const { data: calls } = await db.from('calls').select('*').eq('client_id', id).order('started_at', { ascending: false });
   const { data: faqs } = await db.from('faqs').select('*').eq('client_id', id);
   const { data: services } = await db.from('services').select('*').eq('client_id', id);
-  const { data: googleToken } = await db.from('google_tokens').select('client_id').eq('client_id', id).maybeSingle();
+  const { data: googleToken } = await db.from('google_tokens').select('refresh_token, calendar_id, updated_at').eq('client_id', id).maybeSingle();
 
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
   const businessHours = (client.business_hours as BusinessHours | null) ?? {};
@@ -52,6 +53,12 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
           initialCallsHandled={client.manual_calls_handled ?? 0}
         />
 
+        <GoogleCredentialCard
+          refreshToken={googleToken?.refresh_token ?? null}
+          calendarId={googleToken?.calendar_id ?? null}
+          updatedAt={googleToken?.updated_at ?? null}
+        />
+
         <div className="card" style={{ padding: 20 }}>
           <h2 style={{ fontSize: 20, marginBottom: 16 }}>Business Info</h2>
           <div style={{ display: 'grid', gap: 8, fontSize: 14 }}>
@@ -59,7 +66,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
             <Row label="Address" value={client.address || '—'} />
             <Row label="Industry" value={client.industry || '—'} />
             <Row label="Email" value={client.email} />
-            <Row label="Google Integration" value={googleToken ? 'Connected' : 'Not connected'} />
+            <Row label="Google Integration" value={googleToken?.refresh_token ? 'Connected' : 'Not connected'} />
           </div>
         </div>
       </div>
