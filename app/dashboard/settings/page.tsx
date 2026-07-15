@@ -33,6 +33,7 @@ function SettingsInner() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [googleConnected, setGoogleConnected] = useState(false);
+  const [disconnecting, setDisconnecting] = useState(false);
 
   const [businessName, setBusinessName] = useState('');
   const [phone, setPhone] = useState('');
@@ -62,8 +63,9 @@ function SettingsInner() {
         setBusinessHours(client.business_hours ?? {});
       }
 
-      const { data: googleTokenRow } = await supabase.from('google_tokens').select('client_id').eq('client_id', user.id).maybeSingle();
-      setGoogleConnected(!!googleTokenRow || searchParams.get('google') === 'connected');
+      const statusRes = await fetch('/api/client/google-status');
+      const statusData = await statusRes.json().catch(() => ({}));
+      setGoogleConnected(!!statusData.connected || searchParams.get('google') === 'connected');
 
       const { data: serviceRows } = await supabase.from('services').select('*').eq('client_id', user.id);
       setServices(serviceRows && serviceRows.length > 0 ? serviceRows : [{ name: '', description: '' }]);
@@ -99,6 +101,15 @@ function SettingsInner() {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
+  }
+
+  async function handleDisconnectGoogle() {
+    setDisconnecting(true);
+    const res = await fetch('/api/client/disconnect-google', { method: 'POST' });
+    if (res.ok) {
+      setGoogleConnected(false);
+    }
+    setDisconnecting(false);
   }
 
   if (loading) return <p style={{ color: 'var(--gray)' }}>Loading…</p>;
@@ -235,9 +246,15 @@ function SettingsInner() {
           <h2 style={{ fontSize: 18, marginBottom: 4 }}>Google Integration</h2>
           <p style={{ fontSize: 13, color: 'var(--gray)' }}>{googleConnected ? 'Connected ✓' : 'Not connected'}</p>
         </div>
-        <a href="/api/auth/google?from=dashboard" className="btn-secondary">
-          {googleConnected ? 'Reconnect' : 'Connect Google'}
-        </a>
+        {googleConnected ? (
+          <button type="button" className="btn-danger" onClick={handleDisconnectGoogle} disabled={disconnecting}>
+            {disconnecting ? 'Disconnecting…' : 'Disconnect'}
+          </button>
+        ) : (
+          <a href="/api/auth/google?from=dashboard" className="btn-secondary">
+            Connect Google
+          </a>
+        )}
       </div>
 
       <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
