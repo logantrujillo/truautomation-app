@@ -37,6 +37,12 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
   return (
     <div>
       <Link href="/admin/clients" style={{ color: 'var(--gray)', fontSize: 13, textDecoration: 'none' }}>&larr; Back to Clients</Link>
+
+      <div className="card" style={{ padding: '10px 16px', margin: '12px 0', display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 0.5, color: 'var(--gray)' }}>Client ID</span>
+        <code style={{ fontSize: 13 }}>{client.id}</code>
+      </div>
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, margin: '12px 0 24px' }}>
         <h1 style={{ fontSize: 32 }}>{client.business_name || client.email}</h1>
         {(client.status === 'active' || client.status === 'pending_onboarding' || client.status === 'pending_payment') && (
