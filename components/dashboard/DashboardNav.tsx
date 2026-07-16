@@ -31,7 +31,7 @@ export default function DashboardNav({ businessName }: { businessName: string | 
         gap: 8,
       }}
     >
-      <div className="logo" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 22, letterSpacing: 2, marginBottom: 8 }}>
+      <div className="logo" style={{ fontFamily: 'var(--font-bebas-neue), sans-serif', fontSize: 22, letterSpacing: 2, marginBottom: 8 }}>
         Tru<span style={{ color: 'var(--orange)' }}>Automation</span>
       </div>
       <p style={{ fontSize: 13, color: 'var(--gray)', marginBottom: 24 }}>{businessName}</p>

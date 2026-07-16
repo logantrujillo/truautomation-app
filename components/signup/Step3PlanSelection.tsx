@@ -63,7 +63,7 @@ export default function Step3PlanSelection({ state, update, userId, onNext, onBa
               }}
             >
               <h3 style={{ fontSize: 22, marginBottom: 8 }}>{plan.label}</h3>
-              <p style={{ fontSize: 28, fontFamily: "'Bebas Neue', sans-serif", color: 'var(--yellow)', marginBottom: 8 }}>
+              <p style={{ fontSize: 28, fontFamily: 'var(--font-bebas-neue), sans-serif', color: 'var(--yellow)', marginBottom: 8 }}>
                 ${plan.perMinute.toFixed(2)}<span style={{ fontSize: 14, color: 'var(--gray)' }}>/min</span>
               </p>
               <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.5 }}>{plan.description}</p>

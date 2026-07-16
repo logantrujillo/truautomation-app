@@ -14,7 +14,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-barlow), sans-serif;
   background: var(--dark);
   color: var(--white);
   overflow-x: hidden;
@@ -25,7 +25,7 @@ body {
 a { color: inherit; }
 
 h1, h2, h3, h4 {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: var(--font-bebas-neue), sans-serif;
   letter-spacing: 1.5px;
 }
 
@@ -65,17 +65,17 @@ h1, h2, h3, h4 {
 }
 
 /* Buttons, reused from marketing site */
-.btn-primary { background: var(--orange); color: var(--white); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; transition: background .2s, transform .2s; display: inline-block; font-family: 'Barlow', sans-serif; border: none; cursor: pointer; }
+.btn-primary { background: var(--orange); color: var(--white); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; transition: background .2s, transform .2s; display: inline-block; font-family: var(--font-barlow), sans-serif; border: none; cursor: pointer; }
 .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); }
 .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn-secondary { border: 1.5px solid rgba(255,255,255,0.2); color: var(--white); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 600; text-decoration: none; transition: border-color .2s, transform .2s; display: inline-block; background: transparent; font-family: 'Barlow', sans-serif; cursor: pointer; }
+.btn-secondary { border: 1.5px solid rgba(255,255,255,0.2); color: var(--white); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 600; text-decoration: none; transition: border-color .2s, transform .2s; display: inline-block; background: transparent; font-family: var(--font-barlow), sans-serif; cursor: pointer; }
 .btn-secondary:hover { border-color: rgba(255,255,255,0.5); transform: translateY(-2px); }
-.btn-danger { border: 1.5px solid var(--red); color: var(--red); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; transition: background .2s, color .2s, transform .2s; display: inline-block; background: transparent; font-family: 'Barlow', sans-serif; cursor: pointer; }
+.btn-danger { border: 1.5px solid var(--red); color: var(--red); padding: 16px 36px; border-radius: 4px; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; transition: background .2s, color .2s, transform .2s; display: inline-block; background: transparent; font-family: var(--font-barlow), sans-serif; cursor: pointer; }
 .btn-danger:hover { background: var(--red); color: var(--white); transform: translateY(-2px); }
 .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; transform: none; background: transparent; color: var(--red); }
 
 input, select, textarea {
-  font-family: 'Barlow', sans-serif;
+  font-family: var(--font-barlow), sans-serif;
   background: rgba(255,255,255,0.04);
   border: 1.5px solid rgba(255,255,255,0.12);
   border-radius: 6px;
@@ -129,4 +129,13 @@ th { color: var(--gray); font-size: 12px; text-transform: uppercase; letter-spac
   .app-nav > p { display: none; }
   .app-nav a, .app-nav button { padding: 8px 10px !important; }
   .app-content { padding: 20px !important; }
+
+  /* The ambient background fx (glow-orb blur + animation, scanline
+     animation) and per-card backdrop-filter blur are cheap on desktop
+     GPUs but continuously repaint/composite every frame, which is
+     expensive on mobile GPUs — this was making the whole page feel
+     laggy/unresponsive on phones for as long as the tab stayed open,
+     not just during initial load. Disabled on small screens. */
+  .glow-orb, .fx-scanline { animation: none !important; display: none; }
+  .card { backdrop-filter: none; background: rgba(20, 28, 46, 0.9); }
 }

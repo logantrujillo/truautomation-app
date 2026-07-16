@@ -13,21 +13,22 @@ export default async function DashboardOverview() {
 
   const supabase = await createClient();
 
-  const { data: recentCalls } = await supabase
-    .from('calls')
-    .select('*')
-    .eq('client_id', client.id)
-    .order('started_at', { ascending: false })
-    .limit(25);
-
-  const { data: appointments } = await supabase
-    .from('appointments')
-    .select('*')
-    .eq('client_id', client.id)
-    .eq('status', 'scheduled')
-    .gte('scheduled_at', new Date().toISOString())
-    .order('scheduled_at', { ascending: true })
-    .limit(10);
+  const [{ data: recentCalls }, { data: appointments }] = await Promise.all([
+    supabase
+      .from('calls')
+      .select('id, caller_name, caller_number, started_at, summary')
+      .eq('client_id', client.id)
+      .order('started_at', { ascending: false })
+      .limit(25),
+    supabase
+      .from('appointments')
+      .select('id, customer_name, service, scheduled_at, customer_phone')
+      .eq('client_id', client.id)
+      .eq('status', 'scheduled')
+      .gte('scheduled_at', new Date().toISOString())
+      .order('scheduled_at', { ascending: true })
+      .limit(10),
+  ]);
 
   const usageMinutes = client.manual_minutes_used ?? 0;
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
@@ -96,7 +97,7 @@ export default async function DashboardOverview() {
                   <tr key={c.id}>
                     <td>{c.caller_name || c.caller_number || 'Unknown'}</td>
                     <td><FormattedDateTime iso={c.started_at} /></td>
-                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
+                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.summary || '—'}</td>
                   </tr>
                 ))}
               </tbody>
