@@ -105,7 +105,7 @@ export default function PrivacyPage() {
           </h2>
           <p style={{ marginBottom: 12 }}>We use the information we collect to:</p>
           <ul style={{ paddingLeft: 22, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <li>Operate Alex, your AI receptionist.</li>
+            <li>Operate your AI receptionist (Alex or Nova, depending on your plan).</li>
             <li>Book appointments on your behalf.</li>
             <li>Provide and maintain your client dashboard.</li>
             <li>Process payments for your subscription.</li>
@@ -120,9 +120,10 @@ export default function PrivacyPage() {
             5. Call Recording
           </h2>
           <p>
-            Calls are processed by VAPI to generate transcripts and enable Alex to respond to
-            callers. Clients are responsible for informing their callers that they may be
-            interacting with an AI system, as required by applicable laws in their jurisdiction.
+            Calls are processed by VAPI to generate transcripts and enable your AI receptionist
+            to respond to callers. Clients are responsible for informing their callers that they
+            may be interacting with an AI system, as required by applicable laws in their
+            jurisdiction.
           </p>
         </section>
 

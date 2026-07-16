@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
+import { getReceptionistBrand } from '@/lib/brand';
 import type { BusinessHours } from '@/lib/types';
 
 interface ServiceRow {
@@ -114,6 +115,8 @@ function SettingsInner() {
 
   if (loading) return <p style={{ color: 'var(--gray)' }}>Loading…</p>;
 
+  const brand = getReceptionistBrand(industry);
+
   return (
     <div>
       <h1 style={{ fontSize: 32, marginBottom: 24 }}>Settings</h1>
@@ -134,6 +137,7 @@ function SettingsInner() {
             <option value="Plumbing">Plumbing</option>
             <option value="HVAC">HVAC</option>
             <option value="Electrical">Electrical</option>
+            <option value="Dental">Dental</option>
             <option value="Other">Other</option>
           </select>
         </div>
@@ -209,7 +213,7 @@ function SettingsInner() {
       </div>
 
       <div className="card" style={{ padding: 24, marginBottom: 24 }}>
-        <h2 style={{ fontSize: 18, marginBottom: 16 }}>Alex Setup</h2>
+        <h2 style={{ fontSize: 18, marginBottom: 16 }}>{brand} Setup</h2>
         <div className="field">
           <label>Special Instructions</label>
           <textarea rows={4} value={alexInstructions} onChange={(e) => setAlexInstructions(e.target.value)} />

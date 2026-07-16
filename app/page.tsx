@@ -26,7 +26,7 @@ export default function HomePage() {
         Welcome to <span style={{ color: 'var(--yellow)' }}>TruAutomation</span>
       </h1>
       <p style={{ color: 'rgba(255,255,255,0.65)', maxWidth: 520, marginBottom: 40, fontSize: 17, lineHeight: 1.7 }}>
-        Manage your Alex AI receptionist, view call logs, and update your business settings.
+        Manage your AI receptionist, view call logs, and update your business settings.
       </p>
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link href="/login" className="btn-primary">Log In</Link>

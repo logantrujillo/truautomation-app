@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { PLANS, SETUP_FEE } from '@/lib/plans';
+import { getReceptionistBrand } from '@/lib/brand';
 import type { PlanId } from '@/lib/types';
 import type { WizardState } from './types';
 
@@ -17,6 +18,7 @@ interface Props {
 export default function Step3PlanSelection({ state, update, userId, onNext, onBack }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const brand = getReceptionistBrand(state.industry);
 
   async function handleContinue() {
     if (!state.plan) {
@@ -66,7 +68,7 @@ export default function Step3PlanSelection({ state, update, userId, onNext, onBa
               <p style={{ fontSize: 28, fontFamily: 'var(--font-bebas-neue), sans-serif', color: 'var(--yellow)', marginBottom: 8 }}>
                 ${plan.perMinute.toFixed(2)}<span style={{ fontSize: 14, color: 'var(--gray)' }}>/min</span>
               </p>
-              <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.5 }}>{plan.description}</p>
+              <p style={{ fontSize: 13, color: 'var(--gray)', lineHeight: 1.5 }}>{plan.description(brand)}</p>
             </button>
           );
         })}

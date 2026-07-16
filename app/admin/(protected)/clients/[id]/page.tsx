@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { adminDb } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
+import { getReceptionistBrand } from '@/lib/brand';
 import type { BusinessHours, PlanId } from '@/lib/types';
 import ClientAssignmentForm from '@/components/admin/ClientAssignmentForm';
 import ClientStatsForm from '@/components/admin/ClientStatsForm';
@@ -28,6 +29,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
 
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
   const businessHours = (client.business_hours as BusinessHours | null) ?? {};
+  const brand = getReceptionistBrand(client.industry);
 
   const monthMinutes = client.manual_minutes_used ?? 0;
   const estimatedBill = plan ? (monthMinutes * plan.perMinute).toFixed(2) : '0.00';
@@ -43,6 +45,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
       </div>
 
       <div className="stat-grid" style={{ marginBottom: 32 }}>
+        <InfoCard label="AI Receptionist" value={brand} />
         <InfoCard label="Status" value={client.status.replace('_', ' ')} />
         <InfoCard label="Plan" value={plan ? `${plan.label} · $${plan.perMinute}/min` : '—'} />
         <InfoCard label="Usage This Month" value={`${monthMinutes} min ($${estimatedBill})`} />
@@ -97,7 +100,7 @@ export default async function AdminClientDetail({ params }: { params: Promise<{ 
       </section>
 
       <section style={{ marginBottom: 32 }}>
-        <h2 style={{ fontSize: 20, marginBottom: 16 }}>Alex Instructions</h2>
+        <h2 style={{ fontSize: 20, marginBottom: 16 }}>{brand} Instructions</h2>
         <div className="card" style={{ padding: 20 }}>
           <p style={{ fontSize: 14, color: client.alex_instructions ? 'var(--white)' : 'var(--gray)' }}>
             {client.alex_instructions || 'None provided'}

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { adminDb } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
+import { getReceptionistBrand } from '@/lib/brand';
 import type { PlanId } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,7 @@ export default async function AdminClientList() {
             <tr>
               <th>Name / Business</th>
               <th>Email</th>
+              <th>AI Receptionist</th>
               <th>Plan</th>
               <th>Signup Date</th>
               <th>Status</th>
@@ -35,6 +37,7 @@ export default async function AdminClientList() {
                   <div style={{ color: 'var(--gray)', fontSize: 13 }}>{c.contact_name || ''}</div>
                 </td>
                 <td>{c.email}</td>
+                <td>{getReceptionistBrand(c.industry)}</td>
                 <td>{c.plan ? PLANS[c.plan as PlanId].label : '—'}</td>
                 <td>{new Date(c.created_at).toLocaleDateString()}</td>
                 <td>
@@ -53,7 +56,7 @@ export default async function AdminClientList() {
             ))}
             {(!clients || clients.length === 0) && (
               <tr>
-                <td colSpan={8} style={{ color: 'var(--gray)', textAlign: 'center', padding: 24 }}>
+                <td colSpan={9} style={{ color: 'var(--gray)', textAlign: 'center', padding: 24 }}>
                   No clients yet.
                 </td>
               </tr>

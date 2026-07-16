@@ -1,5 +1,6 @@
 'use client';
 
+import { getReceptionistBrand } from '@/lib/brand';
 import type { WizardState } from './types';
 
 interface Props {
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export default function Step6GoogleIntegration({ state, userId, onNext, onBack }: Props) {
+  const brand = getReceptionistBrand(state.industry);
+
   function connectGoogle() {
     // Full-page redirect into the OAuth flow. Everything up to this point
     // has already been saved to Supabase, so no wizard state is lost.
@@ -24,7 +27,7 @@ export default function Step6GoogleIntegration({ state, userId, onNext, onBack }
     <div>
       <h2 style={{ fontSize: 26, marginBottom: 8 }}>Connect Google</h2>
       <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 28, lineHeight: 1.6 }}>
-        Connect your Google account so Alex can book appointments directly on your Calendar.
+        Connect your Google account so {brand} can book appointments directly on your Calendar.
         You can also skip this and connect it later from your dashboard settings.
       </p>
 

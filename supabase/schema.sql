@@ -16,13 +16,15 @@ create table if not exists public.clients (
   business_name text,
   contact_name text,
   phone text,
-  industry text, -- 'plumbing' | 'hvac' | 'electrical' | 'other'
+  industry text, -- 'plumbing' | 'hvac' | 'electrical' | 'dental' | 'other' — also determines
+                 -- which AI receptionist brand the client sees (see lib/brand.ts): 'dental' -> Nova, everything else -> Alex
   address text,
   plan text check (plan in ('after_hours', '247')),
   status text not null default 'pending_onboarding'
     check (status in ('pending_onboarding', 'pending_payment', 'active', 'suspended')),
 
-  -- Alex configuration
+  -- AI receptionist configuration (column kept as alex_instructions for both
+  -- brands — additive change, not renamed, to avoid a real data migration)
   alex_instructions text,
   business_hours jsonb,
 
@@ -53,7 +55,7 @@ create table if not exists public.services (
 );
 
 -- ---------------------------------------------------------------------
--- FAQS — question/answer pairs Alex uses when answering calls.
+-- FAQS — question/answer pairs the AI receptionist (Alex or Nova) uses when answering calls.
 -- Read/write by the owning client.
 -- ---------------------------------------------------------------------
 create table if not exists public.faqs (
