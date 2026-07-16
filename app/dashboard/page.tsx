@@ -17,7 +17,7 @@ export default async function DashboardOverview() {
   const [{ data: recentCalls }, { data: appointments }] = await Promise.all([
     supabase
       .from('calls')
-      .select('id, caller_name, caller_number, started_at, summary')
+      .select('id, caller_name, caller_number, started_at, summary, transcript')
       .eq('client_id', client.id)
       .order('started_at', { ascending: false })
       .limit(25),
@@ -99,7 +99,7 @@ export default async function DashboardOverview() {
                   <tr key={c.id}>
                     <td>{c.caller_name || c.caller_number || 'Unknown'}</td>
                     <td><FormattedDateTime iso={c.started_at} /></td>
-                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.summary || '—'}</td>
+                    <td style={{ maxWidth: 360, whiteSpace: 'pre-wrap' }}>{c.transcript || c.summary || '—'}</td>
                   </tr>
                 ))}
               </tbody>
