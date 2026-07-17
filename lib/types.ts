@@ -9,6 +9,7 @@ export interface BusinessHours {
 
 export interface Client {
   id: string;
+  client_ref: string | null;
   email: string;
   business_name: string | null;
   contact_name: string | null;

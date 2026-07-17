@@ -16,15 +16,15 @@ create table if not exists public.clients (
   business_name text,
   contact_name text,
   phone text,
-  industry text, -- 'plumbing' | 'hvac' | 'electrical' | 'dental' | 'other' — also determines
-                 -- which AI receptionist brand the client sees (see lib/brand.ts): 'dental' -> Nova, everything else -> Alex
+  industry text, -- e.g. 'plumbing' | 'hvac' | 'electrical' | 'garage_door' | 'appliance_repair' |
+                 -- 'mobile_services' | 'locksmith' | 'junk_removal' | 'tree_landscaping' |
+                 -- 'pest_control' | 'med_spa' | 'other'
   address text,
   plan text check (plan in ('after_hours', '247')),
   status text not null default 'pending_onboarding'
     check (status in ('pending_onboarding', 'pending_payment', 'active', 'suspended')),
 
-  -- AI receptionist configuration (column kept as alex_instructions for both
-  -- brands — additive change, not renamed, to avoid a real data migration)
+  -- Alex (AI receptionist) configuration
   alex_instructions text,
   business_hours jsonb,
 
@@ -55,7 +55,7 @@ create table if not exists public.services (
 );
 
 -- ---------------------------------------------------------------------
--- FAQS — question/answer pairs the AI receptionist (Alex or Nova) uses when answering calls.
+-- FAQS — question/answer pairs Alex uses when answering calls.
 -- Read/write by the owning client.
 -- ---------------------------------------------------------------------
 create table if not exists public.faqs (
@@ -241,3 +241,12 @@ alter table public.clients add column if not exists manual_calls_handled integer
 -- Lets the admin paste a call transcript against a caller's number without
 -- a VAPI call record backing it.
 alter table public.calls add column if not exists transcript text;
+
+-- =========================================================================
+-- MIGRATION: client_ref (admin-only, self-assigned reference label)
+-- Purely a label Logan sets himself in the admin panel to help him keep
+-- track of clients while building out their AI config — has no bearing
+-- on auth, RLS, or any integration. The real primary key (clients.id)
+-- stays the Supabase auth user UUID and is never user-editable.
+-- =========================================================================
+alter table public.clients add column if not exists client_ref text;

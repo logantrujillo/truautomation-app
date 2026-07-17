@@ -33,7 +33,7 @@ export default function LoginPage() {
     <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
       <form onSubmit={handleSubmit} className="card" style={{ width: '100%', maxWidth: 400, padding: 40 }}>
         <h1 style={{ fontSize: 32, marginBottom: 8 }}>Client Login</h1>
-        <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 28 }}>Access your AI receptionist dashboard</p>
+        <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 28 }}>Access your Alex dashboard</p>
 
         <div className="field">
           <label htmlFor="email">Email</label>

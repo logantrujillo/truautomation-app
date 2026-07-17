@@ -2,7 +2,6 @@ import 'server-only';
 import { Resend } from 'resend';
 import type { Client } from './types';
 import { PLANS } from './plans';
-import { getReceptionistBrand } from './brand';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = process.env.EMAIL_FROM || 'TruAutomation <notifications@truautomationtechnologies.com>';
@@ -10,17 +9,16 @@ const LOGAN_EMAIL = process.env.LOGAN_NOTIFICATION_EMAIL || 'info@truautomationt
 
 export async function sendWelcomeEmail(client: Client) {
   const plan = client.plan ? PLANS[client.plan] : null;
-  const brand = getReceptionistBrand(client.industry);
 
   await resend.emails.send({
     from: FROM,
     to: client.email,
-    subject: `Welcome to TruAutomation — your ${brand} account is live`,
+    subject: `Welcome to TruAutomation — your Alex account is live`,
     html: `
       <div style="font-family: Barlow, Arial, sans-serif; background:#0D1825; color:#fff; padding:32px;">
         <h1 style="font-family: 'Bebas Neue', sans-serif; color:#FF6B35; letter-spacing:1px;">Welcome, ${escapeHtml(client.business_name || client.contact_name || 'there')}!</h1>
         <p style="color:#8A8FA8; font-size:15px; line-height:1.6;">
-          Your ${brand} AI receptionist account is now active on the <strong style="color:#fff;">${plan?.label ?? ''}</strong> plan.
+          Your Alex AI receptionist account is now active on the <strong style="color:#fff;">${plan?.label ?? ''}</strong> plan.
         </p>
         <p style="color:#8A8FA8; font-size:15px; line-height:1.6;">
           Log in to your dashboard any time to view call logs, upcoming appointments, and update your business settings.

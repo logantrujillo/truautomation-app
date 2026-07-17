@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
-import { getReceptionistBrand } from '@/lib/brand';
 import type { FaqDraft, WizardState } from './types';
 
 interface Props {
@@ -16,7 +15,6 @@ interface Props {
 export default function Step5AlexSetup({ state, update, userId, onNext, onBack }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const brand = getReceptionistBrand(state.industry);
 
   function updateFaq(index: number, partial: Partial<FaqDraft>) {
     const next = [...state.faqs];
@@ -69,10 +67,10 @@ export default function Step5AlexSetup({ state, update, userId, onNext, onBack }
 
   return (
     <form onSubmit={handleSubmit}>
-      <h2 style={{ fontSize: 26, marginBottom: 24 }}>Set Up {brand}</h2>
+      <h2 style={{ fontSize: 26, marginBottom: 24 }}>Set Up Alex</h2>
 
       <div className="field">
-        <label htmlFor="alexInstructions">Special Instructions for {brand}</label>
+        <label htmlFor="alexInstructions">Special Instructions for Alex</label>
         <textarea
           id="alexInstructions"
           rows={5}
@@ -86,7 +84,7 @@ export default function Step5AlexSetup({ state, update, userId, onNext, onBack }
         Frequently Asked Questions
       </h3>
       <p style={{ fontSize: 13, color: 'var(--gray)', marginBottom: 16 }}>
-        Add common questions customers ask so {brand} can answer them accurately.
+        Add common questions customers ask so Alex can answer them accurately.
       </p>
       {state.faqs.map((faq, i) => (
         <div key={i} style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'flex-start' }}>

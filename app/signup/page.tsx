@@ -11,7 +11,6 @@ import Step5AlexSetup from '@/components/signup/Step5AlexSetup';
 import Step6GoogleIntegration from '@/components/signup/Step6GoogleIntegration';
 import Step7Review from '@/components/signup/Step7Review';
 import { DEFAULT_WIZARD_STATE, type WizardState } from '@/components/signup/types';
-import { getReceptionistBrand } from '@/lib/brand';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function SignupPage() {
@@ -108,11 +107,11 @@ function SignupWizard() {
       <div style={{ width: '100%', maxWidth: 720 }}>
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
           <h1 style={{ fontSize: 40 }}>
-            Get Started with <span style={{ color: 'var(--yellow)' }}>{getReceptionistBrand(state.industry)}</span>
+            Get Started with <span style={{ color: 'var(--yellow)' }}>Alex</span>
           </h1>
         </div>
 
-        <ProgressBar step={step} brand={getReceptionistBrand(state.industry)} />
+        <ProgressBar step={step} />
 
         <div className="card" style={{ padding: 40 }}>
           {step === 1 && (

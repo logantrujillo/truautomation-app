@@ -12,9 +12,20 @@ interface Props {
   onBack: () => void;
 }
 
-// Determines which AI receptionist brand the client is set up with — see
-// lib/brand.ts. 'Dental' maps to Nova; everything else maps to Alex.
-const INDUSTRIES = ['Plumbing', 'HVAC', 'Electrical', 'Dental', 'Other'];
+const INDUSTRIES = [
+  'Plumbing',
+  'HVAC',
+  'Electrical',
+  'Garage Door Repair',
+  'Appliance Repair',
+  'Mobile Services (Detailing, Mobile Mechanics, Mobile Pet Grooming)',
+  'Locksmiths',
+  'Junk Removal & Small Moving Companies',
+  'Tree Service & Landscaping',
+  'Pest Control (Independents Only)',
+  'Med Spas / Lash & Brow Studios / Massage Therapists (Solo Operators)',
+  'Other',
+];
 
 export default function Step2BusinessInfo({ state, update, userId, onNext, onBack }: Props) {
   const [error, setError] = useState<string | null>(null);

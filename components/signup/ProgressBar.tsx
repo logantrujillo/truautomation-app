@@ -1,18 +1,16 @@
 'use client';
 
-import type { ReceptionistBrand } from '@/lib/brand';
+const STEPS = [
+  'Account',
+  'Business Info',
+  'Plan',
+  'Services',
+  'Alex Setup',
+  'Google',
+  'Review & Pay',
+];
 
-export default function ProgressBar({ step, brand }: { step: number; brand: ReceptionistBrand }) {
-  const STEPS = [
-    'Account',
-    'Business Info',
-    'Plan',
-    'Services',
-    `${brand} Setup`,
-    'Google',
-    'Review & Pay',
-  ];
-
+export default function ProgressBar({ step }: { step: number }) {
   return (
     <div style={{ marginBottom: 40 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>

@@ -25,7 +25,7 @@ const bebasNeue = Bebas_Neue({
 
 export const metadata: Metadata = {
   title: 'TruAutomation – Client Portal',
-  description: 'Manage your AI receptionist account.',
+  description: 'Manage your Alex AI receptionist account.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server';
 import { getCurrentClient } from '@/lib/auth';
 import { PLANS } from '@/lib/plans';
-import { getReceptionistBrand } from '@/lib/brand';
 import type { PlanId } from '@/lib/types';
 import FormattedDateTime from '@/components/FormattedDateTime';
 
@@ -34,14 +33,13 @@ export default async function DashboardOverview() {
   const usageMinutes = client.manual_minutes_used ?? 0;
   const plan = client.plan ? PLANS[client.plan as PlanId] : null;
   const estimatedCost = plan ? (usageMinutes * plan.perMinute).toFixed(2) : '0.00';
-  const brand = getReceptionistBrand(client.industry);
 
   return (
     <div>
       <h1 style={{ fontSize: 32, marginBottom: 24 }}>Overview</h1>
 
       <div className="stat-grid" style={{ marginBottom: 32 }}>
-        <StatCard label={`Your ${brand} Number`} value={client.twilio_number || 'Pending assignment'} />
+        <StatCard label="Your Alex Number" value={client.twilio_number || 'Pending assignment'} />
         <StatCard label="Plan" value={plan ? `${plan.label} · $${plan.perMinute.toFixed(2)}/min` : '—'} />
         <StatCard label="Usage This Month" value={`${usageMinutes} min ($${estimatedCost})`} />
         <StatCard label="Appointments Booked This Month" value={String(client.manual_appointments_booked ?? 0)} />
@@ -83,7 +81,7 @@ export default async function DashboardOverview() {
         <div className="card" style={{ overflow: 'hidden' }}>
           {!recentCalls || recentCalls.length === 0 ? (
             <p style={{ padding: 24, color: 'var(--gray)', fontSize: 14 }}>
-              No calls logged yet. Once your number is assigned and {brand} starts taking calls, they&apos;ll show up here.
+              No calls logged yet. Once your number is assigned and Alex starts taking calls, they&apos;ll show up here.
             </p>
           ) : (
             <table>
