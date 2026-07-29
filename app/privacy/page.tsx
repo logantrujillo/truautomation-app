@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         Privacy <span style={{ color: 'var(--orange)' }}>Policy</span>
       </h1>
       <p style={{ color: 'var(--gray)', fontSize: 14, marginBottom: 48 }}>
-        Last updated: July 5, 2026
+        Last updated: July 28, 2026
       </p>
 
       <div
@@ -101,7 +101,33 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            4. How We Use Information
+            4. Google API Limited Use Disclosure
+          </h2>
+          <p>
+            The use of raw or derived user data received from Workspace APIs will adhere to the
+            Google User Data Policy, including the Limited Use requirements.
+          </p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
+            5. AI / Third-Party Data Disclosure
+          </h2>
+          <p>
+            TruAutomation Technologies uses OpenAI (via our voice AI provider, VAPI) to power our
+            AI receptionist, Alex. Per OpenAI&apos;s API data usage policy, data submitted via the
+            API is not used to train or improve OpenAI&apos;s models. VAPI&apos;s Terms of Service
+            similarly restrict any use of call data for service-improvement purposes to
+            de-identified data that does not disclose business or caller information. Google
+            Workspace and Google Calendar data accessed by our application is never transferred to
+            any third party for the purpose of training AI/ML models, and is used solely to
+            provide the scheduling functionality our clients have signed up for.
+          </p>
+        </section>
+
+        <section>
+          <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
+            6. How We Use Information
           </h2>
           <p style={{ marginBottom: 12 }}>We use the information we collect to:</p>
           <ul style={{ paddingLeft: 22, display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -117,7 +143,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            5. Call Recording
+            7. Call Recording
           </h2>
           <p>
             Calls are processed by VAPI to generate transcripts and enable Alex to respond to
@@ -128,7 +154,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            6. Third Party Providers
+            8. Third Party Providers
           </h2>
           <p style={{ marginBottom: 12 }}>
             We share data with the following third-party providers in order to deliver our
@@ -146,7 +172,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            7. Data Security
+            9. Data Security
           </h2>
           <p>
             We use row level security to ensure your data is only accessible to you, HTTPS
@@ -158,7 +184,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            8. Data Retention
+            10. Data Retention
           </h2>
           <p>
             We retain your data for as long as your account remains active. If you cancel your
@@ -168,7 +194,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            9. Your Rights
+            11. Your Rights
           </h2>
           <p>
             You have the right to access, correct, or delete your data, disconnect your Google
@@ -183,14 +209,14 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            10. Children's Privacy
+            12. Children's Privacy
           </h2>
           <p>Our services are not directed to individuals under the age of 18.</p>
         </section>
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            11. Changes to This Policy
+            13. Changes to This Policy
           </h2>
           <p>
             We may update this Privacy Policy from time to time. Users will be notified by email
@@ -200,7 +226,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2 style={{ fontSize: 26, color: 'var(--white)', marginBottom: 14 }}>
-            12. Contact Us
+            14. Contact Us
           </h2>
           <p>
             If you have any questions about this Privacy Policy, please contact us at:
